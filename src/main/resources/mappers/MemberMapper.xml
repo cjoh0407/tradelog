@@ -6,10 +6,73 @@
 
 <mapper namespace="kr.or.tradelog.mapper.MemberMapper">
 
-    <select id="countMembers"
-            resultType="int">
-        SELECT COUNT(*)
-        FROM MEMBER
-    </select>
+	<!-- 회원 가입 -->
+	<insert id="insertMember" parameterType="kr.or.tradelog.dto.MemberDTO">
+		INSERT INTO MEMBER (
+			MEMBER_ID,
+			LOGIN_ID,
+			PASSWORD
+		)
+		VALUES (
+			SEQ_MEMBER.NEXTVAL,
+			#{loginId},
+			#{password}
+		)
+	</insert>
 
+	<!-- 아이디 중복 확인 -->
+	<select id="checkLoginIdDuplicate" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE LOGIN_ID = #{loginId}
+	</select>
+
+	<!-- 회원 조회 -->
+	<select id="selectMemberByLoginId" parameterType="String" resultType="kr.or.tradelog.dto.MemberDTO">
+		SELECT * 
+		FROM MEMBER
+		WHERE LOGIN_ID = #{loginId}
+	</select>
+	
+	<!-- 회원 번호로 회원 조회 -->
+	<select id="selectMemberByMemberId"
+	        parameterType="int"
+	        resultType="kr.or.tradelog.dto.MemberDTO">
+	
+	    SELECT *
+	    FROM MEMBER
+	    WHERE MEMBER_ID = #{memberId}
+	
+	</select>
+	
+	<!-- 회원이 작성한 거래에 연결된 원칙 체크 삭제 -->
+	<delete id="deleteTradeRuleChecksByMemberId">
+	    DELETE FROM TRADE_RULE_CHECK
+	    WHERE TRADE_ID IN (
+	        SELECT TRADE_ID
+	        FROM TRADE
+	        WHERE MEMBER_ID = #{memberId}
+	    )
+	</delete>
+	
+	
+	<!-- 회원의 매매일지 삭제 -->
+	<delete id="deleteTradesByMemberId">
+	    DELETE FROM TRADE
+	    WHERE MEMBER_ID = #{memberId}
+	</delete>
+	
+	
+	<!-- 회원의 매매 원칙 삭제 -->
+	<delete id="deleteTradeRulesByMemberId">
+	    DELETE FROM TRADE_RULE
+	    WHERE MEMBER_ID = #{memberId}
+	</delete>
+	
+	
+	<!-- 회원 삭제 -->
+	<delete id="deleteMember">
+	    DELETE FROM MEMBER
+	    WHERE MEMBER_ID = #{memberId}
+	</delete>
 </mapper>

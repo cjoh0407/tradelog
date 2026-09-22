@@ -1,0 +1,169 @@
+.analysis-container {
+    padding: 32px;
+}
+
+.analysis-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   분석 섹션
+========================= */
+
+.analysis-section {
+    margin-top: 40px;
+}
+
+.analysis-section-title {
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   성과 카드
+========================= */
+
+.analysis-card {
+    height: 100%;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.analysis-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.analysis-value {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   수익 / 손실 색상
+========================= */
+
+.price-up {
+    color: #dc3545;
+}
+
+.price-down {
+    color: #0d6efd;
+}
+
+.price-flat {
+    color: #64748b;
+}
+
+
+/* =========================
+   테이블 공통
+========================= */
+
+.analysis-card .table {
+    margin-bottom: 0;
+}
+
+.analysis-card .table th {
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.analysis-card .table td {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+
+/* =========================
+   차트 카드
+========================= */
+
+.chart-card {
+    height: 100%;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+
+/* =========================
+   월별 성과
+========================= */
+
+.monthly-chart-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+
+/* =========================
+   종목별 성과
+========================= */
+
+/* 종목별 표 : 전체 + 세로 스크롤 */
+.stock-table-container {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+/* 종목별 TOP10 차트 */
+.stock-chart-container {
+    position: relative;
+    width: 100%;
+    height: 360px;
+}
+
+
+/* =========================
+   원칙별 성과
+========================= */
+
+/* 원칙별 표 : 전체 + 세로 스크롤 */
+.rule-table-container {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+/* 원칙별 TOP5 차트 */
+.rule-chart-container {
+    position: relative;
+    width: 100%;
+    height: 360px;
+}
+
+
+/* =========================
+   반응형
+========================= */
+
+@media (max-width: 768px) {
+
+    .analysis-container {
+        padding: 20px;
+    }
+
+    .monthly-chart-container {
+        height: 260px;
+    }
+
+    .stock-chart-container,
+    .rule-chart-container {
+        height: 320px;
+    }
+
+    .stock-table-container,
+    .rule-table-container {
+        max-height: 320px;
+    }
+}

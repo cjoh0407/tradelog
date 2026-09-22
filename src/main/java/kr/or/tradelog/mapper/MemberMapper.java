@@ -14,7 +14,24 @@ public interface MemberMapper {
 	// 회원 가입
 	int insertMember(MemberDTO dto);
 	
-	// 아이디 중복 확인
+	// 회원 가입 시 아이디 중복 확인
 	int checkLoginIdDuplicate(String loginId);
 	
+	// 회원 조회
+	MemberDTO selectMemberByLoginId(String loginId);
+	
+    // 회원 번호로 회원 조회
+    MemberDTO selectMemberByMemberId(int memberId);
+    
+    // 회원의 원칙 체크 데이터 삭제
+    int deleteTradeRuleChecksByMemberId(int memberId);
+
+    // 회원의 매매일지 삭제
+    int deleteTradesByMemberId(int memberId);
+
+    // 회원의 매매 원칙 삭제
+    int deleteTradeRulesByMemberId(int memberId);
+
+    // 회원 삭제
+    int deleteMember(int memberId);
 }

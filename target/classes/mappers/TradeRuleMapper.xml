@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.tradelog.mapper.TradeRuleMapper">
+
+    <!-- 매매 원칙 등록 -->
+    <insert id="insertRule"
+            parameterType="kr.or.tradelog.dto.TradeRuleDTO">
+
+        INSERT INTO TRADE_RULE (
+            RULE_ID,
+            MEMBER_ID,
+            RULE_CONTENT,
+            CREATED_AT
+        )
+        VALUES (
+            SEQ_TRADE_RULE.NEXTVAL,
+            #{memberId},
+            #{ruleContent},
+            SYSDATE
+        )
+
+    </insert>
+
+
+    <!-- 매매 원칙 목록 조회 -->
+    <select id="selectAll"
+            parameterType="int"
+            resultType="kr.or.tradelog.dto.TradeRuleDTO">
+
+        SELECT
+            RULE_ID,
+            MEMBER_ID,
+            RULE_CONTENT,
+            CREATED_AT
+        FROM TRADE_RULE
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY RULE_ID DESC
+
+    </select>
+    
+    <!-- 매매 원칙 단건 조회 -->
+	<select id="selectOne"
+	        resultType="kr.or.tradelog.dto.TradeRuleDTO">
+	
+	    SELECT
+	        RULE_ID,
+	        MEMBER_ID,
+	        RULE_CONTENT,
+	        CREATED_AT
+	    FROM TRADE_RULE
+	    WHERE RULE_ID = #{ruleId}
+	      AND MEMBER_ID = #{memberId}
+	
+	</select>
+	
+	
+	<!-- 매매 원칙 수정 -->
+	<update id="updateRule"
+	        parameterType="kr.or.tradelog.dto.TradeRuleDTO">
+	
+	    UPDATE TRADE_RULE
+	    SET RULE_CONTENT = #{ruleContent}
+	    WHERE RULE_ID = #{ruleId}
+	      AND MEMBER_ID = #{memberId}
+	
+	</update>
+	
+	<!-- 해당 원칙의 거래 연결 데이터 삭제 -->
+	<delete id="deleteRuleChecks">
+	
+	    DELETE FROM TRADE_RULE_CHECK
+	    WHERE RULE_ID = #{ruleId}
+	      AND RULE_ID IN (
+	          SELECT RULE_ID
+	          FROM TRADE_RULE
+	          WHERE RULE_ID = #{ruleId}
+	            AND MEMBER_ID = #{memberId}
+	      )
+	
+	</delete>
+	
+	<!-- 매매 원칙 삭제 -->
+	<delete id="deleteRule">
+	
+	    DELETE FROM TRADE_RULE
+	    WHERE RULE_ID = #{ruleId}
+	    AND MEMBER_ID = #{memberId}
+
+	</delete>
+	
+	<select id="selectRuleAnalysis"
+	        parameterType="int"
+	        resultType="kr.or.tradelog.dto.RuleAnalysisDTO">
+	
+	    SELECT
+	        R.RULE_ID,
+	        R.RULE_CONTENT,
+	
+	        COUNT(RC.TRADE_ID) AS TRADE_COUNT,
+	
+	        SUM(
+	            CASE
+	                WHEN RC.FOLLOWED = 'Y' THEN 1
+	                ELSE 0
+	            END
+	        ) AS FOLLOWED_COUNT,
+	
+	        SUM(
+	            CASE
+	                WHEN RC.FOLLOWED = 'N' THEN 1
+	                ELSE 0
+	            END
+	        ) AS NOT_FOLLOWED_COUNT,
+	
+	        NVL(
+	            AVG(
+	                CASE
+	                    WHEN RC.FOLLOWED = 'Y' THEN 100
+	                    WHEN RC.FOLLOWED = 'N' THEN 0
+	                END
+	            ),
+	            0
+	        ) AS COMPLIANCE_RATE,
+	
+	        NVL(
+	            AVG(
+	                (T.SELL_PRICE - T.BUY_PRICE)
+	                / T.BUY_PRICE * 100
+	            ),
+	            0
+	        ) AS AVERAGE_RETURN_RATE,
+	
+	        NVL(
+	            SUM(
+	                (T.SELL_PRICE - T.BUY_PRICE)
+	                * T.QUANTITY
+	            ),
+	            0
+	        ) AS TOTAL_PROFIT
+	
+	    FROM TRADE_RULE R
+	
+	    LEFT JOIN TRADE_RULE_CHECK RC
+	        ON R.RULE_ID = RC.RULE_ID
+	
+	    LEFT JOIN TRADE T
+	        ON RC.TRADE_ID = T.TRADE_ID
+	
+	    WHERE R.MEMBER_ID = #{memberId}
+	
+	    GROUP BY
+	        R.RULE_ID,
+	        R.RULE_CONTENT
+	
+	    ORDER BY R.RULE_ID
+	
+	</select>
+	
+	<select id="selectRuleComparison"
+	        parameterType="int"
+	        resultType="kr.or.tradelog.dto.RuleComparisonDTO">
+	
+	    SELECT
+	        R.RULE_ID,
+	        R.RULE_CONTENT,
+	
+	        /* 준수 거래 수 */
+	        SUM(
+	            CASE
+	                WHEN RC.FOLLOWED = 'Y' THEN 1
+	                ELSE 0
+	            END
+	        ) AS FOLLOWED_TRADE_COUNT,
+	
+	        /* 준수 거래 평균 수익률 */
+	        NVL(
+	            AVG(
+	                CASE
+	                    WHEN RC.FOLLOWED = 'Y'
+	                    THEN (T.SELL_PRICE - T.BUY_PRICE)
+	                         / T.BUY_PRICE * 100
+	                END
+	            ),
+	            0
+	        ) AS FOLLOWED_AVERAGE_RETURN_RATE,
+	
+	        /* 준수 거래 총 실현손익 */
+	        NVL(
+	            SUM(
+	                CASE
+	                    WHEN RC.FOLLOWED = 'Y'
+	                    THEN (T.SELL_PRICE - T.BUY_PRICE)
+	                         * T.QUANTITY
+	                    ELSE 0
+	                END
+	            ),
+	            0
+	        ) AS FOLLOWED_TOTAL_PROFIT,
+	
+	
+	        /* 미준수 거래 수 */
+	        SUM(
+	            CASE
+	                WHEN RC.FOLLOWED = 'N' THEN 1
+	                ELSE 0
+	            END
+	        ) AS NOT_FOLLOWED_TRADE_COUNT,
+	
+	        /* 미준수 거래 평균 수익률 */
+	        NVL(
+	            AVG(
+	                CASE
+	                    WHEN RC.FOLLOWED = 'N'
+	                    THEN (T.SELL_PRICE - T.BUY_PRICE)
+	                         / T.BUY_PRICE * 100
+	                END
+	            ),
+	            0
+	        ) AS NOT_FOLLOWED_AVERAGE_RETURN_RATE,
+	
+	        /* 미준수 거래 총 실현손익 */
+	        NVL(
+	            SUM(
+	                CASE
+	                    WHEN RC.FOLLOWED = 'N'
+	                    THEN (T.SELL_PRICE - T.BUY_PRICE)
+	                         * T.QUANTITY
+	                    ELSE 0
+	                END
+	            ),
+	            0
+	        ) AS NOT_FOLLOWED_TOTAL_PROFIT
+	
+	    FROM TRADE_RULE R
+	
+	    LEFT JOIN TRADE_RULE_CHECK RC
+	        ON R.RULE_ID = RC.RULE_ID
+	
+	    LEFT JOIN TRADE T
+	        ON RC.TRADE_ID = T.TRADE_ID
+	
+	    WHERE R.MEMBER_ID = #{memberId}
+	
+	    GROUP BY
+	        R.RULE_ID,
+	        R.RULE_CONTENT
+	
+	    ORDER BY R.RULE_ID
+	
+	</select>
+	
+	<select id="countOwnedRule" resultType="int">
+	
+	    SELECT COUNT(*)
+	    FROM TRADE_RULE
+	    WHERE RULE_ID = #{ruleId}
+	      AND MEMBER_ID = #{memberId}
+	
+	</select>
+
+</mapper>

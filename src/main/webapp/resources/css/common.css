@@ -1,0 +1,191 @@
+/* TradeLog 공통 스타일 */
+
+body {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.brand {
+    color: #2563eb;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.brand-description {
+    color: #64748b;
+    font-size: 15px;
+}
+
+/* =========================
+   전체 레이아웃
+========================= */
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   Sidebar
+========================= */
+
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #172033;
+    padding: 30px 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    flex-shrink: 0;
+}
+
+
+/* 로고 */
+
+.sidebar-logo {
+    margin-bottom: 40px;
+}
+
+.sidebar-logo a {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+
+/* 메뉴 */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-link {
+    display: block;
+
+    padding: 12px 16px;
+
+    color: #cbd5e1;
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+.sidebar-link:hover {
+    color: #ffffff;
+    background-color: #26344d;
+}
+
+
+/* 현재 선택된 메뉴 */
+
+.sidebar-link.active {
+    color: #ffffff;
+    background-color: #2563eb;
+}
+
+
+/* =========================
+   사용자 영역
+========================= */
+
+.sidebar-user {
+    margin-top: auto;
+}
+
+.sidebar-user-info {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 15px;
+
+    color: #ffffff;
+}
+
+.sidebar-user-label {
+    margin-bottom: 4px;
+
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+
+/* 로그아웃 */
+
+.sidebar-logout {
+    width: 100%;
+
+    padding: 10px;
+
+    background: transparent;
+
+    color: #f87171;
+
+    border: 1px solid #ef4444;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.sidebar-logout:hover {
+    color: #ffffff;
+    background-color: #ef4444;
+}
+
+.sidebar-user-actions {
+    margin-top: 16px;
+}
+
+.sidebar-user-actions form {
+    margin: 0;
+}
+
+.sidebar-logout {
+    width: 100%;
+}
+
+.sidebar-withdraw {
+    display: block;
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    color: #999;
+
+    text-decoration: none;
+}
+
+.sidebar-withdraw:hover {
+    color: #dc3545;
+
+    text-decoration: underline;
+}
+
+
+/* =========================
+   메인 콘텐츠
+========================= */
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+
+    background-color: #f8fafc;
+}

@@ -1,0 +1,293 @@
+/* =========================
+   매매 원칙 목록
+========================= */
+
+.rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.rules-title {
+    margin-bottom: 8px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.rules-description {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.rule-register-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    background-color: #212529;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.rule-register-btn:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+
+/* =========================
+   원칙 목록 스크롤 영역
+========================= */
+
+.rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    max-height: 600px;
+    overflow-y: auto;
+
+    padding-right: 8px;
+}
+
+
+/* =========================
+   원칙 카드
+========================= */
+
+.rule-card {
+    flex-shrink: 0;
+
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.rule-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.rule-number {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.rule-content {
+    margin-bottom: 16px;
+    color: #212529;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.rule-created-at {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* =========================
+   수정 / 삭제
+========================= */
+
+.rule-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rule-modify-btn {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.rule-modify-btn:hover {
+    background-color: #f8fafc;
+    text-decoration: none;
+}
+
+.rule-delete-form {
+    margin: 0;
+}
+
+.rule-delete-btn {
+    padding: 6px 12px;
+    border: 1px solid #dc3545;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #dc3545;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rule-delete-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+
+/* =========================
+   원칙 없음
+========================= */
+
+.rules-empty {
+    padding: 60px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+    text-align: center;
+    color: #64748b;
+}
+
+.rules-empty p {
+    margin-bottom: 12px;
+}
+
+.rules-empty a {
+    color: #212529;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* =========================
+   매매 원칙 등록 / 수정 폼
+========================= */
+
+.rule-form-header {
+    margin-bottom: 24px;
+}
+
+.rule-form-header h2 {
+    margin: 0 0 8px;
+    color: #212529;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.rule-form-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.rule-form-card {
+    max-width: 720px;
+    padding: 28px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.rule-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.rule-form-group label {
+    margin-bottom: 10px;
+    color: #212529;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.rule-form-group textarea {
+    width: 100%;
+    min-height: 160px;
+    padding: 14px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box;
+
+    color: #212529;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+
+    resize: vertical;
+    outline: none;
+}
+
+.rule-form-group textarea:focus {
+    border-color: #212529;
+}
+
+.rule-form-help {
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.rule-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.rule-cancel-btn,
+.rule-submit-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rule-cancel-btn {
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    color: #475569;
+    text-decoration: none;
+}
+
+.rule-cancel-btn:hover {
+    background-color: #f8fafc;
+}
+
+.rule-submit-btn {
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+}
+
+.rule-submit-btn:hover {
+    background-color: #343a40;
+}
+
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 767px) {
+
+    .rules-header {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .rules-list {
+        max-height: 500px;
+    }
+
+    .rule-card {
+        padding: 20px;
+    }
+
+}

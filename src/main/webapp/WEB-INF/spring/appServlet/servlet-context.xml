@@ -26,6 +26,25 @@
     </beans:bean>
 
     <!-- Controller 패키지 Scan -->
-    <context:component-scan base-package="kr.or.tradelog.controller" />
+    <context:component-scan base-package="kr.or.tradelog" />
+    
+    <context:property-placeholder location="classpath:api-secret.properties" />
+    
+	<!-- 로그인 Interceptor 설정 -->
+	<interceptors>
+	    <interceptor>
+	
+	        <!-- Interceptor를 적용할 요청 주소 -->
+	        <mapping path="/dashboard"/>
+	        <mapping path="/trade/**"/>
+	        <mapping path="/rules/"/>
+	        <mapping path="/rules/**"/>
+	        <mapping path="/analysis/**"/>
+	
+	        <!-- 실행할 Interceptor -->
+	        <beans:bean class="kr.or.tradelog.interceptor.LoginInterceptor"/>
+	
+	    </interceptor>
+	</interceptors>
 
 </beans:beans>
