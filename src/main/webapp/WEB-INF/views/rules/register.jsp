@@ -52,6 +52,12 @@
         <!-- 등록 폼 -->
         <div class="rule-form-card">
 
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">
+                    <c:out value="${error}" />
+                </div>
+            </c:if>
+
             <form action="${pageContext.request.contextPath}/rules/register"
                   method="post">
 
@@ -63,10 +69,10 @@
 
                     <textarea id="ruleContent"
                               name="ruleContent"
-                              rows="6"
-                              maxlength="500"
-                              placeholder="예: 추격 매수하지 않는다."
-                              required></textarea>
+                               rows="6"
+                               maxlength="500"
+                               placeholder="예: 추격 매수하지 않는다."
+                               required><c:out value="${rule.ruleContent}" /></textarea>
 
                     <div class="rule-form-help">
                         실제 매매에서 확인하기 쉽도록 구체적인 원칙을 작성해보세요.

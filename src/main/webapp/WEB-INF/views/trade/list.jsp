@@ -387,7 +387,7 @@
 				        <ul class="pagination justify-content-center">
 				
 				            <!-- 이전 -->
-				            <li class="page-item ${page == 1 ? 'disabled' : ''}">
+				            <li class="page-item ${startPage == 1 ? 'disabled' : ''}">
 				                <a class="page-link"
 				                   href="${pageContext.request.contextPath}/trade/list?page=${startPage - 1}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}">
 				                    이전
@@ -409,7 +409,7 @@
 				            </c:forEach>
 				
 				            <!-- 다음 -->
-				            <li class="page-item ${page == totalPages ? 'disabled' : ''}">
+				            <li class="page-item ${endPage == totalPages ? 'disabled' : ''}">
 				                <a class="page-link"
 				                   href="${pageContext.request.contextPath}/trade/list?page=${endPage + 1}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}">
 				                    다음

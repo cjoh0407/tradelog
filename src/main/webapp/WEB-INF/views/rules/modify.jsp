@@ -56,6 +56,12 @@
         <!-- 수정 폼 -->
         <div class="rule-form-card">
 
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">
+                    <c:out value="${error}" />
+                </div>
+            </c:if>
+
             <form action="${pageContext.request.contextPath}/rules/modify"
                   method="post">
 

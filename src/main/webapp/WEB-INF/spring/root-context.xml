@@ -3,22 +3,21 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            https://www.springframework.org/schema/beans/spring-beans.xsd
            http://www.springframework.org/schema/context
-           https://www.springframework.org/schema/context/spring-context.xsd
-           http://www.springframework.org/schema/tx
-           https://www.springframework.org/schema/tx/spring-tx.xsd">
+           https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:property-placeholder location="classpath:db-secret.properties" />
 
 	<!-- HikariCP DataSource -->
 
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
-		<property name="jdbcUrl" value="jdbc:oracle:thin:@//localhost:1521/xepdb1" />
-		<property name="username" value="kosauser" />
-		<property name="password" value="kosa1004" />
+		<property name="driverClassName" value="${db.driver-class-name}" />
+		<property name="jdbcUrl" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
 		<property name="maximumPoolSize" value="10" />
 	</bean>
 
@@ -44,7 +43,5 @@
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-
-	<tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans>

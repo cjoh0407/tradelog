@@ -14,10 +14,6 @@ public class TradeRuleCheckServiceImpl implements TradeRuleCheckService{
 	
 	private final TradeRuleCheckMapper mapper;
 	
-	public void register(TradeRuleCheckDTO dto) {
-		mapper.insertRuleCheck(dto);
-	};
-	
 	@Override
 	public List<TradeRuleCheckDTO> selectByTradeId(
 	        int tradeId,
@@ -27,10 +23,5 @@ public class TradeRuleCheckServiceImpl implements TradeRuleCheckService{
 	            tradeId,
 	            memberId
 	    );
-	}
-	
-	@Override
-	public void deleteByTradeId(int tradeId) {
-	    mapper.deleteByTradeId(tradeId);
 	}
 }

@@ -60,6 +60,12 @@
 					      action="${pageContext.request.contextPath}/trade/modify"
 					      method="post">
 
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger" role="alert">
+                                <c:out value="${error}" />
+                            </div>
+                        </c:if>
+
                         <!-- 수정할 매매의 PK -->
                         <input type="hidden"
                                name="tradeId"
@@ -78,7 +84,7 @@
 						           class="form-control"
 						           id="stockName"
 						           name="stockName"
-						           value="${trade.stockName}"
+							           value="<c:out value='${trade.stockName}' />"
 						           autocomplete="off"
 						           required>
 						
@@ -86,7 +92,14 @@
 						    <input type="hidden"
 						           id="stockCode"
 						           name="stockCode"
-						           value="${trade.stockCode}">
+							           value="<c:out value='${trade.stockCode}' />">
+
+                        <c:if test="${not empty errors.stockName}">
+                            <div class="text-danger mt-1"><c:out value="${errors.stockName}" /></div>
+                        </c:if>
+                        <c:if test="${not empty errors.stockCode}">
+                            <div class="text-danger mt-1"><c:out value="${errors.stockCode}" /></div>
+                        </c:if>
 						
 						    <!-- 종목 검색 결과 -->
 						    <div id="stockSearchResult">
@@ -109,8 +122,12 @@
                                        class="form-control"
                                        id="buyDate"
                                        name="buyDate"
-                                       value="${trade.buyDate}"
+                                       value="<c:out value='${trade.buyDate}' />"
                                        required>
+
+                                <c:if test="${not empty errors.buyDate}">
+                                    <div class="text-danger mt-1"><c:out value="${errors.buyDate}" /></div>
+                                </c:if>
 
                             </div>
 
@@ -126,8 +143,12 @@
                                        class="form-control"
                                        id="sellDate"
                                        name="sellDate"
-                                       value="${trade.sellDate}"
+                                       value="<c:out value='${trade.sellDate}' />"
                                        required>
+
+                                <c:if test="${not empty errors.sellDate}">
+                                    <div class="text-danger mt-1"><c:out value="${errors.sellDate}" /></div>
+                                </c:if>
 
                             </div>
 
@@ -148,10 +169,14 @@
                                        class="form-control"
                                        id="buyPrice"
                                        name="buyPrice"
-                                       value="${trade.buyPrice}"
+                                       value="<c:out value='${trade.buyPrice}' />"
                                        step="0.01"
                                        min="0"
                                        required>
+
+                                <c:if test="${not empty errors.buyPrice}">
+                                    <div class="text-danger mt-1"><c:out value="${errors.buyPrice}" /></div>
+                                </c:if>
 
                             </div>
 
@@ -167,10 +192,14 @@
                                        class="form-control"
                                        id="sellPrice"
                                        name="sellPrice"
-                                       value="${trade.sellPrice}"
+                                       value="<c:out value='${trade.sellPrice}' />"
                                        step="0.01"
                                        min="0"
                                        required>
+
+                                <c:if test="${not empty errors.sellPrice}">
+                                    <div class="text-danger mt-1"><c:out value="${errors.sellPrice}" /></div>
+                                </c:if>
 
                             </div>
 
@@ -189,10 +218,14 @@
                                    class="form-control"
                                    id="quantity"
                                    name="quantity"
-                                   value="${trade.quantity}"
+                                   value="<c:out value='${trade.quantity}' />"
                                    step="0.0001"
                                    min="0"
                                    required>
+
+                            <c:if test="${not empty errors.quantity}">
+                                <div class="text-danger mt-1"><c:out value="${errors.quantity}" /></div>
+                            </c:if>
 
                         </div>
 
@@ -208,7 +241,11 @@
                             <textarea class="form-control"
                                       id="buyReason"
                                       name="buyReason"
-                                      rows="4">${trade.buyReason}</textarea>
+                                      rows="4"><c:out value="${trade.buyReason}" /></textarea>
+
+                            <c:if test="${not empty errors.buyReason}">
+                                <div class="text-danger mt-1"><c:out value="${errors.buyReason}" /></div>
+                            </c:if>
 
                         </div>
 
@@ -224,7 +261,11 @@
                             <textarea class="form-control"
                                       id="review"
                                       name="review"
-                                      rows="5">${trade.review}</textarea>
+                                      rows="5"><c:out value="${trade.review}" /></textarea>
+
+                            <c:if test="${not empty errors.review}">
+                                <div class="text-danger mt-1"><c:out value="${errors.review}" /></div>
+                            </c:if>
 
                         </div>
 

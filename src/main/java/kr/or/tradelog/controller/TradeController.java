@@ -12,15 +12,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.tradelog.dto.MemberDTO;
+import kr.or.tradelog.dto.PageRequestDTO;
+import kr.or.tradelog.dto.PageResponseDTO;
 import kr.or.tradelog.dto.StockDTO;
 import kr.or.tradelog.dto.TradeDTO;
 import kr.or.tradelog.dto.TradeRuleCheckDTO;
 import kr.or.tradelog.dto.TradeRuleDTO;
+import kr.or.tradelog.dto.TradeSearchCondition;
 import kr.or.tradelog.service.StockApiService;
 import kr.or.tradelog.service.TradeRuleCheckService;
 import kr.or.tradelog.service.TradeRuleService;
@@ -71,13 +75,8 @@ public class TradeController {
 	    // 2. Bean Validation 서버 유효성 검증
 	    if (bindingResult.hasErrors()) {
 
-	        // 등록 화면에서 사용할 매매 원칙 다시 조회
-	        List<TradeRuleDTO> rules =
-	                tradeRuleService.selectAll(
-	                        loginMember.getMemberId()
-	                );
-
-	        model.addAttribute("rules", rules);
+	        addValidationErrors(bindingResult, model);
+	        prepareRegisterForm(dto, loginMember.getMemberId(), model);
 
 	        // 잘못된 데이터는 저장하지 않고 등록 화면으로 돌아감
 	        return "trade/register";
@@ -86,76 +85,28 @@ public class TradeController {
 	    // 3. 현재 로그인 회원 ID 설정
 	    dto.setMemberId(loginMember.getMemberId());
 
-	 // 거래 저장
+	 // 거래 저장 + 매매 원칙 연결
 	    try {
 
-	        service.register(dto);
+	        service.registerWithRules(dto, ruleIds, params);
 
 	    } catch (IllegalArgumentException e) {
 
 	        // Service에서 발생한 비즈니스 검증 오류
-	        bindingResult.rejectValue(
-	                "sellDate",
-	                "invalid.sellDate",
-	                e.getMessage()
-	        );
-
-	        // 등록 화면에서 사용할 매매 원칙 다시 조회
-	        List<TradeRuleDTO> rules =
-	                tradeRuleService.selectAll(
-	                        loginMember.getMemberId()
-	                );
-
-	        model.addAttribute("rules", rules);
+	        model.addAttribute("error", e.getMessage());
+	        prepareRegisterForm(dto, loginMember.getMemberId(), model);
 
 	        return "trade/register";
 	    }
 
-	    // 5. INSERT 후 생성된 거래 ID
-	    int tradeId = dto.getTradeId();
-
-	    // 6. 선택한 매매 원칙이 있다면 거래와 연결
-	    if (ruleIds != null) {
-
-	        for (Integer ruleId : ruleIds) {
-
-	            // 현재 로그인 사용자의 원칙인지 확인
-	            TradeRuleDTO rule =
-	                    tradeRuleService.detail(
-	                            ruleId,
-	                            loginMember.getMemberId()
-	                    );
-
-	            // 다른 사용자의 원칙이면 무시
-	            if (rule == null) {
-	                continue;
-	            }
-
-	            String followed =
-	                    params.get("followed_" + ruleId);
-
-	            TradeRuleCheckDTO ruleCheck =
-	                    TradeRuleCheckDTO.builder()
-	                            .tradeId(tradeId)
-	                            .ruleId(ruleId)
-	                            .followed(followed)
-	                            .build();
-
-	            tradeRuleCheckService.register(ruleCheck);
-	        }
-	    }
-
-	    // 7. 등록 완료 후 목록으로 이동
+	    // 등록 완료 후 목록으로 이동
 	    return "redirect:/trade/list";
 	}
 	
 	// 매매일지 관리 페이지
 	@GetMapping("/list")
 	public String listForm(
-	        @RequestParam(value = "keyword", required = false) String keyword,
-	        @RequestParam(value = "startDate", required = false) String startDate,
-	        @RequestParam(value = "endDate", required = false) String endDate,
-	        @RequestParam(value = "sort", required = false) String sort,
+	        @ModelAttribute TradeSearchCondition condition,
 	        @RequestParam(value = "page", defaultValue = "1") int page,
 	        HttpSession session,
 	        Model model) {
@@ -165,87 +116,24 @@ public class TradeController {
 
 	    int memberId = loginMember.getMemberId();
 
+	    condition.normalize();
 
-	    // 검색 조건 정리
-	    if (keyword != null) {
-	        keyword = keyword.trim();
-	    }
+	    PageResponseDTO<TradeDTO> result = service.searchPage(
+	            memberId,
+	            condition,
+	            new PageRequestDTO(page, 10)
+	    );
 
-	    if (startDate != null) {
-	        startDate = startDate.trim();
-	        if (startDate.isEmpty()) {
-	            startDate = null;
-	        }
-	    }
-
-	    if (endDate != null) {
-	        endDate = endDate.trim();
-	        if (endDate.isEmpty()) {
-	            endDate = null;
-	        }
-	    }
-
-
-	    int pageSize = 10;
-
-	    if (page < 1) {
-	        page = 1;
-	    }
-
-
-	    int totalCount =
-	            service.countTrades(
-	                    memberId,
-	                    keyword,
-	                    startDate,
-	                    endDate
-	            );
-
-	    int totalPages =
-	            (int) Math.ceil((double) totalCount / pageSize);
-
-	    int offset =
-	            (page - 1) * pageSize;
-
-
-	    // 페이지 번호 10개씩
-	    int pageBlockSize = 10;
-
-	    int startPage =
-	            ((page - 1) / pageBlockSize) * pageBlockSize + 1;
-
-	    int endPage =
-	            Math.min(
-	                    startPage + pageBlockSize - 1,
-	                    totalPages
-	            );
-
-
-	    List<TradeDTO> list =
-	            service.searchTrades(
-	                    memberId,
-	                    keyword,
-	                    startDate,
-	                    endDate,
-	                    sort,
-	                    offset,
-	                    pageSize
-	            );
-
-
-	    model.addAttribute("list", list);
-
-	    model.addAttribute("keyword", keyword);
-	    model.addAttribute("startDate", startDate);
-	    model.addAttribute("endDate", endDate);
-	    model.addAttribute("sort", sort);
-
-	    model.addAttribute("page", page);
-	    model.addAttribute("totalPages", totalPages);
-	    model.addAttribute("totalCount", totalCount);
-
-	    model.addAttribute("startPage", startPage);
-	    model.addAttribute("endPage", endPage);
+	    model.addAttribute("list", result.getList());
+	    model.addAttribute("keyword", condition.getKeyword());
+	    model.addAttribute("startDate", condition.getStartDate());
+	    model.addAttribute("endDate", condition.getEndDate());
+	    model.addAttribute("sort", condition.getSort());
+	    model.addAttribute("page", result.getPage());
+	    model.addAttribute("totalPages", result.getTotalPages());
+	    model.addAttribute("totalCount", result.getTotalCount());
+	    model.addAttribute("startPage", result.getStartPage());
+	    model.addAttribute("endPage", result.getEndPage());
 
 
 	    return "trade/list";
@@ -270,8 +158,6 @@ public class TradeController {
 		                memberId
 		        );
 
-		System.out.println("현재 거래 종목코드 = [" + trade.getStockCode() + "]");
-		
 		StockDTO stock =
 		        stockApiService.getCurrentPrice(trade.getStockCode());
 		
@@ -345,22 +231,36 @@ public class TradeController {
 	// 수정 완료 후 리스트로 이동
 	@PostMapping("/modify")
 	public String modify(
-	        TradeDTO dto,
+	        @Valid TradeDTO dto,
+	        BindingResult bindingResult,
 	        @RequestParam(value = "ruleIds", required = false)
 	        List<Integer> ruleIds,
 	        @RequestParam Map<String, String> params,
-	        HttpSession session) {
+	        HttpSession session,
+	        Model model) {
 
 	    MemberDTO loginMember =
 	            (MemberDTO) session.getAttribute("loginMember");
 
 	    dto.setMemberId(loginMember.getMemberId());
 
-	    service.modifyWithRules(
-	            dto,
-	            ruleIds,
-	            params
-	    );
+	    if (bindingResult.hasErrors()) {
+	        addValidationErrors(bindingResult, model);
+	        prepareModifyForm(dto, loginMember.getMemberId(), model);
+	        return "trade/modify";
+	    }
+
+	    try {
+	        service.modifyWithRules(
+	                dto,
+	                ruleIds,
+	                params
+	        );
+	    } catch (IllegalArgumentException e) {
+	        model.addAttribute("error", e.getMessage());
+	        prepareModifyForm(dto, loginMember.getMemberId(), model);
+	        return "trade/modify";
+	    }
 
 	    return "redirect:/trade/list";
 	}
@@ -372,5 +272,40 @@ public class TradeController {
 		int memberId = loginMember.getMemberId();
 		service.delete(tradeId, memberId);
 		return "redirect:/trade/list";
+	}
+
+	private void prepareRegisterForm(
+	        TradeDTO dto,
+	        int memberId,
+	        Model model) {
+
+	    model.addAttribute("trade", dto);
+	    model.addAttribute("rules", tradeRuleService.selectAll(memberId));
+	}
+
+	private void prepareModifyForm(
+	        TradeDTO dto,
+	        int memberId,
+	        Model model) {
+
+	    model.addAttribute("trade", dto);
+	    model.addAttribute("rules", tradeRuleService.selectAll(memberId));
+	    model.addAttribute("ruleCheckMap", new HashMap<Integer, String>());
+	}
+
+	private void addValidationErrors(
+	        BindingResult bindingResult,
+	        Model model) {
+
+	    Map<String, String> errors = new HashMap<>();
+
+	    bindingResult.getFieldErrors().forEach(error ->
+	            errors.putIfAbsent(
+	                    error.getField(),
+	                    error.getDefaultMessage()
+	            )
+	    );
+
+	    model.addAttribute("errors", errors);
 	}
 }

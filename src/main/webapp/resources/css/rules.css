@@ -15,12 +15,6 @@
     font-weight: 700;
 }
 
-.rules-description {
-    margin: 0;
-    color: #64748b;
-    font-size: 14px;
-}
-
 .rule-register-btn {
     padding: 10px 18px;
     border-radius: 8px;
@@ -167,23 +161,6 @@
 /* =========================
    매매 원칙 등록 / 수정 폼
 ========================= */
-
-.rule-form-header {
-    margin-bottom: 24px;
-}
-
-.rule-form-header h2 {
-    margin: 0 0 8px;
-    color: #212529;
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.rule-form-header p {
-    margin: 0;
-    color: #64748b;
-    font-size: 14px;
-}
 
 .rule-form-card {
     max-width: 720px;

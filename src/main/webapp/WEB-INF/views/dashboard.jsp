@@ -270,7 +270,7 @@
 									<c:forEach var="trade" items="${recentTrades}">
 										<tr class="trade-row"
 											onclick="location.href='${pageContext.request.contextPath}/trade/detail?tradeId=${trade.tradeId}'">
-											<td class="fw-semibold">${trade.stockName}</td>
+											<td class="fw-semibold"><c:out value="${trade.stockName}" /></td>
 											<td>${trade.buyDate}</td>
 											<td>${trade.sellDate}</td>
 

@@ -2,16 +2,21 @@ package kr.or.tradelog.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.tradelog.dto.MonthlyAnalysisDTO;
+import kr.or.tradelog.dto.PageRequestDTO;
+import kr.or.tradelog.dto.PageResponseDTO;
 import kr.or.tradelog.dto.StockAnalysisDTO;
 import kr.or.tradelog.dto.TradeDTO;
 import kr.or.tradelog.dto.TradeRuleCheckDTO;
+import kr.or.tradelog.dto.TradeSearchCondition;
 import kr.or.tradelog.mapper.TradeMapper;
 import kr.or.tradelog.mapper.TradeRuleCheckMapper;
 import kr.or.tradelog.mapper.TradeRuleMapper;
@@ -31,7 +36,20 @@ public class TradeServiceImpl implements TradeService {
     // ==========================================
 
     @Override
-    public void register(TradeDTO dto) {
+    @Transactional
+    public void registerWithRules(
+            TradeDTO dto,
+            List<Integer> ruleIds,
+            Map<String, String> params) {
+
+        validateTradeDates(dto);
+
+        mapper.insertTrade(dto);
+
+        insertRuleChecks(dto, ruleIds, params);
+    }
+
+    private void validateTradeDates(TradeDTO dto) {
 
         // 매도일은 매수일보다 빠를 수 없음
         if (dto.getBuyDate() != null
@@ -42,26 +60,47 @@ public class TradeServiceImpl implements TradeService {
                     "매도일은 매수일보다 빠를 수 없습니다."
             );
         }
-
-        mapper.insertTrade(dto);
     }
 
+    private void insertRuleChecks(
+            TradeDTO dto,
+            List<Integer> ruleIds,
+            Map<String, String> params) {
 
-    // ==========================================
-    // 거래 목록 조회
-    // ==========================================
-
-    @Override
-    public List<TradeDTO> selectAll(int memberId) {
-
-        List<TradeDTO> list =
-                mapper.selectTradesByMemberId(memberId);
-
-        for (TradeDTO trade : list) {
-            calculateTradeResult(trade);
+        if (ruleIds == null || ruleIds.isEmpty()) {
+            return;
         }
 
-        return list;
+        Set<Integer> uniqueRuleIds = new LinkedHashSet<>(ruleIds);
+
+        for (Integer ruleId : uniqueRuleIds) {
+            if (ruleId == null) {
+                throw new IllegalArgumentException("선택한 매매 원칙을 확인해주세요.");
+            }
+
+            int owned = tradeRuleMapper.countOwnedRule(
+                    ruleId,
+                    dto.getMemberId()
+            );
+
+            if (owned == 0) {
+                continue;
+            }
+
+            String followed = params.get("followed_" + ruleId);
+            if (!"Y".equals(followed) && !"N".equals(followed)) {
+                throw new IllegalArgumentException("매매 원칙 준수 여부를 선택해주세요.");
+            }
+
+            TradeRuleCheckDTO ruleCheck =
+                    TradeRuleCheckDTO.builder()
+                            .tradeId(dto.getTradeId())
+                            .ruleId(ruleId)
+                            .followed(followed)
+                            .build();
+
+            tradeRuleCheckMapper.insertRuleCheck(ruleCheck);
+        }
     }
 
 
@@ -121,21 +160,18 @@ public class TradeServiceImpl implements TradeService {
 
 
     // ==========================================
-    // 거래 수정
-    // ==========================================
-
-    @Override
-    public void modify(TradeDTO dto) {
-        mapper.modifyTrade(dto);
-    }
-
-
-    // ==========================================
     // 거래 삭제
     // ==========================================
 
     @Override
+    @Transactional
     public void delete(int tradeId, int memberId) {
+
+        tradeRuleCheckMapper.deleteByTradeIdAndMemberId(
+                tradeId,
+                memberId
+        );
+
         mapper.deleteTrade(tradeId, memberId);
     }
 
@@ -234,6 +270,8 @@ public class TradeServiceImpl implements TradeService {
             List<Integer> ruleIds,
             Map<String, String> params) {
 
+        validateTradeDates(dto);
+
         // 1. 본인 거래만 수정
         int updated = mapper.modifyTrade(dto);
 
@@ -248,33 +286,7 @@ public class TradeServiceImpl implements TradeService {
         );
 
         // 3. 원칙 다시 저장
-        if (ruleIds != null) {
-
-            for (Integer ruleId : ruleIds) {
-
-                int owned =
-                        tradeRuleMapper.countOwnedRule(
-                                ruleId,
-                                dto.getMemberId()
-                        );
-
-                if (owned == 0) {
-                    continue;
-                }
-
-                String followed =
-                        params.get("followed_" + ruleId);
-
-                TradeRuleCheckDTO ruleCheck =
-                        TradeRuleCheckDTO.builder()
-                                .tradeId(dto.getTradeId())
-                                .ruleId(ruleId)
-                                .followed(followed)
-                                .build();
-
-                tradeRuleCheckMapper.insertRuleCheck(ruleCheck);
-            }
-        }
+        insertRuleChecks(dto, ruleIds, params);
     }
 
 
@@ -302,7 +314,34 @@ public class TradeServiceImpl implements TradeService {
     }
     
     @Override
-    public List<TradeDTO> searchTrades(
+    public PageResponseDTO<TradeDTO> searchPage(
+            int memberId,
+            TradeSearchCondition condition,
+            PageRequestDTO pageRequest) {
+
+        int totalCount = countTrades(
+                memberId,
+                condition.getKeyword(),
+                condition.getStartDate(),
+                condition.getEndDate()
+        );
+
+        PageRequestDTO resolvedPage = pageRequest.resolve(totalCount);
+
+        List<TradeDTO> list = searchTrades(
+                memberId,
+                condition.getKeyword(),
+                condition.getStartDate(),
+                condition.getEndDate(),
+                condition.getSort(),
+                resolvedPage.getOffset(),
+                resolvedPage.getPageSize()
+        );
+
+        return new PageResponseDTO<>(list, totalCount, resolvedPage, 10);
+    }
+
+    private List<TradeDTO> searchTrades(
             int memberId,
             String keyword,
             String startDate,
@@ -329,8 +368,8 @@ public class TradeServiceImpl implements TradeService {
         return list;
     }
 
-    @Override
-    public int countTrades(
+
+    private int countTrades(
             int memberId,
             String keyword,
             String startDate,

@@ -3,9 +3,11 @@ package kr.or.tradelog.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +33,19 @@ public class TradeRuleController {
     // 매매 원칙 등록 처리
     @PostMapping("/register")
     public String register(
-            TradeRuleDTO dto,
-            HttpSession session) {
+            @Valid TradeRuleDTO dto,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("rule", dto);
+            model.addAttribute(
+                    "error",
+                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
+            );
+            return "rules/register";
+        }
 
         MemberDTO loginMember =
                 (MemberDTO) session.getAttribute("loginMember");
@@ -90,8 +103,19 @@ public class TradeRuleController {
     //수정
     @PostMapping("/modify")
     public String modify(
-            TradeRuleDTO dto,
-            HttpSession session) {
+            @Valid TradeRuleDTO dto,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("rule", dto);
+            model.addAttribute(
+                    "error",
+                    bindingResult.getFieldErrors().get(0).getDefaultMessage()
+            );
+            return "rules/modify";
+        }
 
         MemberDTO loginMember =
                 (MemberDTO) session.getAttribute("loginMember");

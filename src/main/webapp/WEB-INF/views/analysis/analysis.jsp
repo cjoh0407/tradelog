@@ -658,6 +658,17 @@
 </div>
 
 
+<div id="chartData" class="d-none" aria-hidden="true">
+    <c:forEach var="stock" items="${stockAnalysisList}">
+        <span data-stock-chart-label><c:out value="${stock.stockName}" /></span>
+    </c:forEach>
+
+    <c:forEach var="rule" items="${ruleComparisonList}">
+        <span data-rule-chart-label><c:out value="${rule.ruleContent}" /></span>
+    </c:forEach>
+</div>
+
+
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -786,13 +797,10 @@ if (monthlyCtx) {
    종목별 TOP10 차트
 ========================================== */
 
-const stockLabels = [
-    <c:forEach var="stock"
-               items="${stockAnalysisList}"
-               varStatus="status">
-        '<c:out value="${stock.stockName}" />'<c:if test="${!status.last}">,</c:if>
-    </c:forEach>
-];
+const stockLabels =
+    Array.from(
+        document.querySelectorAll("[data-stock-chart-label]")
+    ).map(element => element.textContent);
 
 const stockProfits = [
     <c:forEach var="stock"
@@ -944,13 +952,10 @@ if (stockCtx) {
 /*
  * 전체 원칙 데이터를 먼저 가져온다.
  */
-const ruleLabels = [
-    <c:forEach var="rule"
-               items="${ruleComparisonList}"
-               varStatus="status">
-        '<c:out value="${rule.ruleContent}" />'<c:if test="${!status.last}">,</c:if>
-    </c:forEach>
-];
+const ruleLabels =
+    Array.from(
+        document.querySelectorAll("[data-rule-chart-label]")
+    ).map(element => element.textContent);
 
 const followedTradeCounts = [
     <c:forEach var="rule"

@@ -48,7 +48,7 @@
                 <!-- 서버에서 전달받은 에러 메시지 -->
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger" role="alert">
-                        ${error}
+                        <c:out value="${error}" />
                     </div>
                 </c:if>
 
@@ -57,7 +57,7 @@
                     <!-- 아이디 -->
                     <div class="mb-3">
                         <label for="loginId" class="form-label">아이디</label>
-                        <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력하세요" autocomplete="username" required>
+                        <input type="text" class="form-control" id="loginId" name="loginId" value="<c:out value='${member.loginId}' />" placeholder="아이디를 입력하세요" autocomplete="username" required>
                         <div id="loginIdMessage" class="form-text">4자 이상 입력해주세요.</div>
                     </div>
 

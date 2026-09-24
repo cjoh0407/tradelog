@@ -53,4 +53,17 @@
 	
 	</delete>
 
+	<delete id="deleteByTradeIdAndMemberId">
+
+	    DELETE FROM TRADE_RULE_CHECK
+	    WHERE TRADE_ID = #{tradeId}
+	      AND EXISTS (
+	          SELECT 1
+	          FROM TRADE
+	          WHERE TRADE_ID = #{tradeId}
+	            AND MEMBER_ID = #{memberId}
+	      )
+
+	</delete>
+
 </mapper>

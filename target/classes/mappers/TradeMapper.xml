@@ -49,22 +49,6 @@
 
     </insert>
 
-
-    <!-- ==========================================
-         회원별 매매 목록 조회
-    ========================================== -->
-    <select id="selectTradesByMemberId"
-            parameterType="int"
-            resultType="kr.or.tradelog.dto.TradeDTO">
-
-        SELECT *
-        FROM TRADE
-        WHERE MEMBER_ID = #{memberId}
-        ORDER BY TRADE_ID DESC
-
-    </select>
-
-
     <!-- ==========================================
          매매 상세 조회
     ========================================== -->

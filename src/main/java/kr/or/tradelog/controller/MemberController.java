@@ -1,9 +1,12 @@
 package kr.or.tradelog.controller;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +22,28 @@ public class MemberController {
 
 	private final MemberService service;
 	
+	//회원가입 페이지로 이동
 	@GetMapping("/register")
 	public String registerForm() {
 		return "member/join";
 	}
 	
+	//회원 등록
 	@PostMapping("/register")
-	public String register(MemberDTO dto, Model model) {
+	public String register(
+			@Valid MemberDTO dto,
+			BindingResult bindingResult,
+			Model model) {
+
+		model.addAttribute("member", dto);
+
+		if (bindingResult.hasErrors()) {
+			model.addAttribute(
+					"error",
+					bindingResult.getFieldErrors().get(0).getDefaultMessage()
+			);
+			return "member/join";
+		}
 		
 		//아이디 중복 검증
 		boolean loginDuplicate = service.isLoginDuplicate(dto.getLoginId());
@@ -33,16 +51,23 @@ public class MemberController {
 			model.addAttribute("error", "이미 사용 중인 아이디입니다.");
 			return "member/join";
 		}
-		service.register(dto);
+		try {
+			service.register(dto);
+		} catch (DuplicateKeyException e) {
+			model.addAttribute("error", "이미 사용 중인 아이디입니다.");
+			return "member/join";
+		}
 		
 		return "redirect:/";
 	}
 	
+	//로그인 페이지로 이동
 	@GetMapping("/login")
 	public String loginForm() {
 		return "member/login";
 	}
 	
+	// 로그인 되면 dashboard로 이동
 	@PostMapping("/login")
 	public String login(MemberDTO dto, Model model, HttpSession session) {
 		
@@ -58,6 +83,7 @@ public class MemberController {
 		return "redirect:/dashboard";
 	}
 	
+	// 로그아웃
 	@PostMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
@@ -65,33 +91,26 @@ public class MemberController {
 		return "redirect:/member/login";
 	}
 	
+	// 회원 탈퇴 페이지로 이동
 	@GetMapping("/withdraw")
 	public String withdrawForm() {
 	    return "member/withdraw";
 	}
 	
+	// 회원 탈퇴
 	@PostMapping("/withdraw")
-	public String withdraw(
-	        String password,
-	        HttpSession session,
-	        Model model) {
+	public String withdraw(String password, HttpSession session, Model model) {
 
-	    MemberDTO loginMember =
-	            (MemberDTO) session.getAttribute("loginMember");
-	    
+	    MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
 	    int memberId = loginMember.getMemberId();
 
-	    boolean passwordMatch =
-	            service.checkPassword(
+	    boolean passwordMatch = service.checkPassword(
 	                    loginMember.getMemberId(),
-	                    password
-	            );
+	                    password);
 
 	    if (!passwordMatch) {
-	        model.addAttribute(
-	                "error",
-	                "비밀번호가 일치하지 않습니다."
-	        );
+	    	model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
 
 	        return "member/withdraw";
 	    }

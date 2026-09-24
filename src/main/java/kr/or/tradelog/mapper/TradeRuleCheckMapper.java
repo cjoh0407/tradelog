@@ -20,4 +20,10 @@ public interface TradeRuleCheckMapper {
 	
 	// 원칙 삭제
 	int deleteByTradeId(int tradeId);
+
+	// 본인 거래의 원칙 체크 삭제
+	int deleteByTradeIdAndMemberId(
+	        @Param("tradeId") int tradeId,
+	        @Param("memberId") int memberId
+	);
 }

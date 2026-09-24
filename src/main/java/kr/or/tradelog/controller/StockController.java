@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.tradelog.dto.StockDTO;
-import kr.or.tradelog.service.StockApiService;
 import kr.or.tradelog.service.StockMasterService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,16 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/stock")
 public class StockController {
 
-    private final StockApiService stockApiService;
     private final StockMasterService stockMasterService;
-    
-    @GetMapping("/test")
-    @ResponseBody
-    public StockDTO test(@RequestParam("stockCode") String stockCode) {
-    	StockDTO stock = stockApiService.getCurrentPrice(stockCode);
-    	
-    	return stock;
-    }
     
     @GetMapping("/search")
     @ResponseBody

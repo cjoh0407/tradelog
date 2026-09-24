@@ -16,9 +16,6 @@ public interface TradeMapper {
     // 매매일지 등록
     int insertTrade(TradeDTO dto);
 
-    // 매매일지 목록 조회
-    List<TradeDTO> selectTradesByMemberId(int memberId);
-
     // 매매일지 상세 조회
     TradeDTO selectTradeByTradeId(
             @Param("tradeId") int tradeId,

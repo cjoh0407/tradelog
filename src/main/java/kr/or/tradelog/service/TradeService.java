@@ -7,20 +7,21 @@ import java.util.Map;
 import kr.or.tradelog.dto.MonthlyAnalysisDTO;
 import kr.or.tradelog.dto.StockAnalysisDTO;
 import kr.or.tradelog.dto.TradeDTO;
+import kr.or.tradelog.dto.PageRequestDTO;
+import kr.or.tradelog.dto.PageResponseDTO;
+import kr.or.tradelog.dto.TradeSearchCondition;
 
 public interface TradeService {
 
-    // 등록
-    void register(TradeDTO dto);
-
-    // 목록 조회
-    List<TradeDTO> selectAll(int memberId);
+    // 거래 등록 + 매매 원칙 연결
+    void registerWithRules(
+            TradeDTO dto,
+            List<Integer> ruleIds,
+            Map<String, String> params
+    );
 
     // 상세 조회
     TradeDTO detail(int tradeId, int memberId);
-
-    // 수정
-    void modify(TradeDTO dto);
 
     // 매도 이후 가격 변화율 계산
     BigDecimal calculatePriceChangeRate(
@@ -62,20 +63,10 @@ public interface TradeService {
     // 월별 성과 분석
     List<MonthlyAnalysisDTO> getMonthlyAnalysis(int memberId);
     
-    List<TradeDTO> searchTrades(
+    PageResponseDTO<TradeDTO> searchPage(
             int memberId,
-            String keyword,
-            String startDate,
-            String endDate,
-            String sort,
-            int offset,
-            int pageSize
+            TradeSearchCondition condition,
+            PageRequestDTO pageRequest
     );
 
-    int countTrades(
-            int memberId,
-            String keyword,
-            String startDate,
-            String endDate
-    );
 }

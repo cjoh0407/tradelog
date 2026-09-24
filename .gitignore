@@ -1,1 +1,4 @@
 /src/main/resources/api-secret.properties
+/src/main/resources/db-secret.properties
+AGENTS.md
+TradeLog_CODE_REVIEW.md

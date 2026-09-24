@@ -92,7 +92,7 @@
                         </span>
 
                         <h2 class="detail-stock-name">
-                            ${trade.stockName}
+                            <c:out value="${trade.stockName}" />
                         </h2>
 
 
@@ -424,7 +424,7 @@
                                 매수 이유
                             </span>
 
-                            <div class="detail-text">${trade.buyReason}</div>
+                            <div class="detail-text"><c:out value="${trade.buyReason}" /></div>
 
                         </div>
 
@@ -437,7 +437,7 @@
                                 매매 복기
                             </span>
 
-                            <div class="detail-text">${trade.review}</div>
+                            <div class="detail-text"><c:out value="${trade.review}" /></div>
 
                         </div>
 

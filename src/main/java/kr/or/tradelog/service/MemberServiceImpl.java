@@ -28,14 +28,13 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public boolean isLoginDuplicate(String loginId) {
 		int checkResult = mapper.checkLoginIdDuplicate(loginId);
-		if (checkResult != 1) return false;
-		return true;
+		return checkResult > 0;
 	}
 
 	@Override
 	public MemberDTO login(MemberDTO dto) {
 
-		// 아이디와 비밀번호가 비어있는지 확인.
+		// 입력한 아이디와 비밀번호가 비어있는지 확인.
 		if(null == dto.getLoginId() || null == dto.getPassword()) return null;
 
 		// DB에서 해당 아이디를 가진 회원의 존재 확인
@@ -63,8 +62,7 @@ public class MemberServiceImpl implements MemberService{
 	    }
 
 	    // 현재 로그인 회원 조회
-	    MemberDTO member =
-	            mapper.selectMemberByMemberId(memberId);
+	    MemberDTO member = mapper.selectMemberByMemberId(memberId);
 
 	    // 회원이 존재하지 않는 경우
 	    if (member == null) {
