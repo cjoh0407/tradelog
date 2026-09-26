@@ -13,7 +13,7 @@ public class PageRequestDTO {
             throw new IllegalArgumentException("페이지 크기는 1 이상이어야 합니다.");
         }
 
-        this.page = Math.max(page, 1);
+        this.page = Math.max(page, 1); // 둘 중 큰 값을 반환 -페이지 방지 및 최소 1페이지 보장
         this.pageSize = pageSize;
     }
 

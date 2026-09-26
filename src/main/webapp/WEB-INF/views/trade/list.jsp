@@ -86,7 +86,7 @@
                     <input type="date"
                            class="form-control trade-date-input"
                            name="startDate"
-                           value="${startDate}">
+                           value="<c:out value='${startDate}' />">
 
                     <span class="text-secondary">
                         ~
@@ -97,7 +97,7 @@
                     <input type="date"
                            class="form-control trade-date-input"
                            name="endDate"
-                           value="${endDate}">
+                           value="<c:out value='${endDate}' />">
 
 
                     <!-- 정렬 -->
@@ -387,9 +387,16 @@
 				        <ul class="pagination justify-content-center">
 				
 				            <!-- 이전 -->
+				            <c:url var="previousPageUrl" value="/trade/list">
+				                <c:param name="page" value="${startPage - 1}" />
+				                <c:param name="keyword" value="${keyword}" />
+				                <c:param name="startDate" value="${startDate}" />
+				                <c:param name="endDate" value="${endDate}" />
+				                <c:param name="sort" value="${sort}" />
+				            </c:url>
 				            <li class="page-item ${startPage == 1 ? 'disabled' : ''}">
 				                <a class="page-link"
-				                   href="${pageContext.request.contextPath}/trade/list?page=${startPage - 1}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}">
+				                   href="<c:out value='${previousPageUrl}' />">
 				                    이전
 				                </a>
 				            </li>
@@ -399,9 +406,16 @@
 				                       begin="${startPage}"
 				                       end="${endPage}">
 				
+				                <c:url var="pageUrl" value="/trade/list">
+				                    <c:param name="page" value="${pageNumber}" />
+				                    <c:param name="keyword" value="${keyword}" />
+				                    <c:param name="startDate" value="${startDate}" />
+				                    <c:param name="endDate" value="${endDate}" />
+				                    <c:param name="sort" value="${sort}" />
+				                </c:url>
 				                <li class="page-item ${page == pageNumber ? 'active' : ''}">
 				                    <a class="page-link"
-				                       href="${pageContext.request.contextPath}/trade/list?page=${pageNumber}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}">
+				                       href="<c:out value='${pageUrl}' />">
 				                        ${pageNumber}
 				                    </a>
 				                </li>
@@ -409,9 +423,16 @@
 				            </c:forEach>
 				
 				            <!-- 다음 -->
+				            <c:url var="nextPageUrl" value="/trade/list">
+				                <c:param name="page" value="${endPage + 1}" />
+				                <c:param name="keyword" value="${keyword}" />
+				                <c:param name="startDate" value="${startDate}" />
+				                <c:param name="endDate" value="${endDate}" />
+				                <c:param name="sort" value="${sort}" />
+				            </c:url>
 				            <li class="page-item ${endPage == totalPages ? 'disabled' : ''}">
 				                <a class="page-link"
-				                   href="${pageContext.request.contextPath}/trade/list?page=${endPage + 1}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}">
+				                   href="<c:out value='${nextPageUrl}' />">
 				                    다음
 				                </a>
 				            </li>

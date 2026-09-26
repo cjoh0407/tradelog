@@ -111,8 +111,7 @@ public class TradeController {
 	        HttpSession session,
 	        Model model) {
 
-	    MemberDTO loginMember =
-	            (MemberDTO) session.getAttribute("loginMember");
+	    MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
 
 	    int memberId = loginMember.getMemberId();
 

@@ -43,7 +43,7 @@
 			<div class="card-body p-4">
 				<h4 class="member-title mb-4">로그인</h4>
 				<c:if test="${not empty error}">
-					<div class="alert alert-danger" role="alert">${error}</div>
+					<div class="alert alert-danger" role="alert"><c:out value="${error}" /></div>
 				</c:if>
 			
 		

@@ -17,6 +17,12 @@ public class TradeSearchCondition {
 
         startDate = trimToNull(startDate);
         endDate = trimToNull(endDate);
+
+        if (!"oldest".equals(sort)
+                && !"returnDesc".equals(sort)
+                && !"returnAsc".equals(sort)) {
+            sort = null;
+        }
     }
 
     private String trimToNull(String value) {

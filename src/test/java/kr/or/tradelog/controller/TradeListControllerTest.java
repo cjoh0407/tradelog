@@ -66,4 +66,35 @@ public class TradeListControllerTest {
 
         assertEquals(null, receivedCondition.get().getEndDate());
     }
+
+    @Test
+    public void listRejectsUnexpectedSortBeforePassingItToServiceAndView() throws Exception {
+        AtomicReference<TradeSearchCondition> receivedCondition = new AtomicReference<>();
+
+        TradeService service = (TradeService) Proxy.newProxyInstance(
+                TradeService.class.getClassLoader(),
+                new Class<?>[] { TradeService.class },
+                (proxy, method, args) -> {
+                    if (!"searchPage".equals(method.getName())) {
+                        throw new AssertionError("Unexpected service method: " + method.getName());
+                    }
+
+                    receivedCondition.set((TradeSearchCondition) args[1]);
+                    PageRequestDTO pageRequest = ((PageRequestDTO) args[2]).resolve(0);
+                    return new PageResponseDTO<TradeDTO>(
+                            Collections.emptyList(), 0, pageRequest, 10);
+                }
+        );
+
+        MockMvc mvc = MockMvcBuilders.standaloneSetup(
+                new TradeController(service, null, null, null)).build();
+
+        mvc.perform(get("/trade/list")
+                .param("sort", "\" onmouseover=\"alert(1)")
+                .sessionAttr("loginMember", MemberDTO.builder().memberId(7).build()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("sort", (Object) null));
+
+        assertEquals(null, receivedCondition.get().getSort());
+    }
 }
