@@ -33,7 +33,50 @@ TradeLog는 그런 기록을 모아 투자 판단을 되짚고 개선할 근거�
 
 ## 화면 미리보기
 
-UI 정의서와 실제 화면 캡처를 정리한 뒤 이곳에 주요 화면과 설명을 추가할 예정입니다.
+아래는 TradeLog의 화면별 UI 정의서입니다. 이미지를 누르면 원본 크기로 확인할 수 있습니다.
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_대시보드.png"><img src="docs/ui/UI정의서_대시보드.png" alt="대시보드 UI 정의서" width="100%"></a><br>
+      <strong>대시보드</strong>
+    </td>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_로그인.png"><img src="docs/ui/UI정의서_로그인.png" alt="로그인 UI 정의서" width="100%"></a><br>
+      <strong>로그인</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_회원가입.png"><img src="docs/ui/UI정의서_회원가입.png" alt="회원가입 UI 정의서" width="100%"></a><br>
+      <strong>회원가입</strong>
+    </td>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매일지%20관리.png"><img src="docs/ui/UI정의서_매매일지%20관리.png" alt="매매일지 관리 UI 정의서" width="100%"></a><br>
+      <strong>매매일지 관리</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매일지_상세보기.png"><img src="docs/ui/UI정의서_매매일지_상세보기.png" alt="매매일지 상세보기 UI 정의서" width="100%"></a><br>
+      <strong>매매일지 상세보기</strong>
+    </td>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매원칙.png"><img src="docs/ui/UI정의서_매매원칙.png" alt="매매원칙 UI 정의서" width="100%"></a><br>
+      <strong>매매원칙</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매분석.png"><img src="docs/ui/UI정의서_매매분석.png" alt="매매분석 UI 정의서 - 전체 및 월별 성과" width="100%"></a><br>
+      <strong>매매분석 — 전체·월별 성과</strong>
+    </td>
+    <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매분석%202.png"><img src="docs/ui/UI정의서_매매분석%202.png" alt="매매분석 UI 정의서 - 종목별 및 원칙별 성과" width="100%"></a><br>
+      <strong>매매분석 — 종목별·원칙별 성과</strong>
+    </td>
+  </tr>
+</table>
 
 ## 애플리케이션 구조와 기술 선택
 
@@ -100,6 +143,7 @@ Controller, Service, Mapper의 책임을 나눈 이유는 화면 요청 처리, 
 | [MVP (PDF)](<docs/MVP.pdf>) | 초기 구현 범위 |
 | [ERD 원본 이미지](<docs/database/ERD.png>) | 데이터베이스 테이블과 관계 |
 | [주요 기능 시퀀스 다이어그램](<docs/시퀀스 다이어그램.png>) | 요청에 따른 주요 처리 흐름 |
+| [UI 정의서 이미지 모음](docs/ui/) | 대시보드, 회원, 매매일지, 원칙, 분석 화면의 UI 정의서 PNG 8종 |
 | [회원·인증 클래스 다이어그램](<docs/클래스 다이어그램/회원,인증 클래스 다이어그램.png>) | 회원 및 인증 관련 클래스 |
 | [매매일지 클래스 다이어그램](<docs/클래스 다이어그램/매매일지 클래스 다이어그램.png>) | 거래 기록 처리 클래스 |
 | [대시보드 클래스 다이어그램](<docs/클래스 다이어그램/대시보드 클래스 다이어그램.png>) | 대시보드 데이터 처리 클래스 |
