@@ -51,19 +51,15 @@ Mapper      ── MyBatis SQL 실행
 Oracle Database
 ```
 
-Controller, Service, Mapper의 책임을 나눈 이유는 화면 요청 처리, 매매 업무 규칙, SQL을 구분해 기능의 흐름과 변경 지점을 파악하기 쉽게 하기 위해서입니다. 개인용 매매일지의 도메인과 규모를 하나의 웹 애플리케이션 안에서 처리하므로, 별도 서비스 간 통신이나 분산 배포를 관리하는 구조보다 단일 애플리케이션이 현재 범위에 적합하다고 판단했습니다.
+Controller, Service, Mapper의 책임을 나눈 이유는 화면 요청 처리, 매매 업무 규칙, SQL을 구분해 기능의 흐름과 변경 지점을 파악하기 쉽게 하기 위해서입니다. 개인용 매매일지의 도메인과 규모를 여러 독립 서비스로 나눌 필요가 없다고 판단해, 한 애플리케이션 안에서 기능 전체를 처리하는 구조를 선택했습니다.
 
 | 기술·구조 | 선택 이유와 고려한 점 |
 |---|---|
-| Java 11 | 프로젝트의 컴파일 기준으로 사용합니다. 거래 가격과 손익 계산에는 `BigDecimal`, 거래일에는 `LocalDate`를 사용해 금액과 날짜를 다룹니다. |
-| Spring Framework 5.3.39 / Spring MVC | JSP 기반 화면을 Controller–Service 흐름으로 구성하고, Servlet·Tomcat 기반 WAR 배포 환경에 맞춰 사용합니다. 이 프로젝트의 Eclipse 환경은 Tomcat 9를 대상으로 설정되어 있습니다. |
-| Spring Legacy 구성 | Spring Boot가 기능적으로 불가능해서 제외한 것은 아닙니다. 현재 프로젝트는 외부 Tomcat에 배포하는 WAR와 JSP 화면을 사용하며, Spring MVC 및 XML 설정을 명시적으로 구성합니다. 기존 실행 환경과 구조에 맞추고 DispatcherServlet, MVC 설정, 인터셉터, Bean 연결을 직접 관리할 수 있다는 점을 선택 기준으로 삼았습니다. 그 대신 Boot의 자동 설정으로 줄일 수 있는 설정 작업을 직접 관리해야 합니다. |
-| JSP / JSTL | 서버에서 조회한 데이터를 바로 화면에 렌더링하는 방식입니다. 별도의 SPA 프런트엔드와 API 배포 체계를 추가하지 않고 매매 기록과 분석 화면을 구현할 수 있습니다. 화면과 서버 코드가 가까이 결합된다는 점은 고려해야 합니다. |
-| MyBatis 3.5.16 | SQL을 직접 작성해 검색·정렬·페이징과 Oracle 집계 쿼리를 확인하고 조정할 수 있습니다. 대신 SQL과 Mapper XML을 직접 관리해야 합니다. JPA처럼 객체 중심으로 데이터 접근을 추상화하는 방식과 달리, 이 프로젝트는 SQL 흐름을 명시적으로 유지하는 쪽을 선택했습니다. |
+| Java 11 | Java 11을 기준으로 구현합니다. 거래 가격과 손익 계산에는 `BigDecimal`, 거래일에는 `LocalDate`를 사용해 금액과 날짜를 다룹니다. |
+| Spring Framework 5.3.39 / Spring MVC | JSP 기반 웹 애플리케이션을 MVC 구조로 구성합니다. 사용자의 요청이 `DispatcherServlet`을 거쳐 Controller, Service, Mapper로 이어지고 다시 화면으로 응답되는 흐름을 직접 구현하며 각 계층의 역할을 이해하는 것을 목표로 했습니다. XML 기반 설정과 인터셉터, ViewResolver, Bean 연결도 직접 확인할 수 있습니다. |
+| JSP / JSTL | 서버에서 조회한 데이터를 화면에 렌더링합니다. 매매일지와 분석 기능을 서버 중심의 요청·응답 흐름으로 구현해 Spring MVC와 화면의 연결을 함께 살펴볼 수 있습니다. |
+| MyBatis 3.5.16 | JPA는 엔티티와 객체를 중심으로 데이터 접근을 추상화하고 기본적인 SQL 생성을 ORM에 맡길 수 있는 반면, MyBatis는 개발자가 SQL을 직접 작성해 Mapper에 연결합니다. TradeLog에서는 종목·기간 검색, 정렬·페이징, 성과 집계 쿼리를 눈으로 확인하고, SQL 결과가 DTO와 화면으로 전달되는 흐름을 이해하고 싶어 MyBatis를 선택했습니다. 그 대신 SQL과 Mapper XML을 직접 관리해야 합니다. |
 | Oracle Database | 회원, 거래, 원칙, 거래별 원칙 체크의 관계를 기본키·외래키·제약조건으로 표현하고, 거래 데이터를 검색·집계합니다. |
-| Maven WAR / Tomcat | 애플리케이션을 WAR로 빌드해 Servlet 컨테이너에 배포하는 현재 프로젝트 환경에 맞춥니다. |
-
-Spring Boot도 JSP와 외부 Tomcat 배포를 지원하므로, Spring Legacy가 모든 상황에서 더 우수하다는 의미는 아닙니다. 이 프로젝트에서는 이미 설정된 JSP·WAR·Tomcat 환경과 명시적인 Spring MVC 구성을 유지하는 것이 목적과 범위에 맞다고 판단했습니다.
 
 ## 데이터베이스 설계
 
