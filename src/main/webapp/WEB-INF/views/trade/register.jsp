@@ -220,9 +220,7 @@
                               name="buyReason"
                                rows="4"
                               maxlength="1000"
-                               placeholder="이 종목을 매수한 이유를 기록해보세요.">
-                               <c:out value="${trade.buyReason}" />
-                               </textarea>
+                               placeholder="이 종목을 매수한 이유를 기록해보세요."><c:out value="${trade.buyReason}" /></textarea>
 
                     <c:if test="${not empty errors.buyReason}">
                         <div class="text-danger mt-1"><c:out value="${errors.buyReason}" /></div>
@@ -240,9 +238,7 @@
                               name="review"
                                rows="5"
                               maxlength="2000"
-                               placeholder="잘한 점, 아쉬운 점, 다음 매매에서 개선할 점 등을 기록해보세요.">
-                               <c:out value="${trade.review}" />
-                               </textarea>
+                               placeholder="잘한 점, 아쉬운 점, 다음 매매에서 개선할 점 등을 기록해보세요."><c:out value="${trade.review}" /></textarea>
 
                     <c:if test="${not empty errors.review}">
                         <div class="text-danger mt-1"><c:out value="${errors.review}" /></div>
