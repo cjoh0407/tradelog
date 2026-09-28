@@ -68,7 +68,7 @@
                             </span>
 
                             <div class="analysis-value">
-                                ${totalCount}건
+                                <fmt:formatNumber value="${totalCount}" pattern="#,##0" />건
                             </div>
 
                         </div>

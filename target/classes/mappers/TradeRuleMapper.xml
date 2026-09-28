@@ -260,5 +260,6 @@
 	      AND MEMBER_ID = #{memberId}
 	
 	</select>
+	
 
 </mapper>

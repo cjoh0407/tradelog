@@ -26,4 +26,5 @@ public interface TradeRuleService {
 	List<RuleAnalysisDTO> selectRuleAnalysis(int memberId);
 	
 	List<RuleComparisonDTO> selectRuleComparison(int memberId);
+	
 }

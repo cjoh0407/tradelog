@@ -70,6 +70,14 @@
             parameterType="int"
             resultType="kr.or.tradelog.dto.TradeDTO">
 
+        WITH RECENT_TRADES AS (
+            SELECT T.*
+            FROM TRADE T
+            WHERE T.MEMBER_ID = #{memberId}
+            ORDER BY T.TRADE_ID DESC
+            FETCH FIRST 5 ROWS ONLY
+        )
+
         SELECT
             T.*,
 
@@ -82,12 +90,10 @@
                 END
             ) AS FOLLOWED_RULE_COUNT
 
-        FROM TRADE T
+        FROM RECENT_TRADES T
 
         LEFT JOIN TRADE_RULE_CHECK TRC
           ON T.TRADE_ID = TRC.TRADE_ID
-
-        WHERE T.MEMBER_ID = #{memberId}
 
         GROUP BY
             T.TRADE_ID,
@@ -105,8 +111,6 @@
             T.UPDATED_AT
 
         ORDER BY T.TRADE_ID DESC
-
-        FETCH FIRST 5 ROWS ONLY
 
     </select>
 

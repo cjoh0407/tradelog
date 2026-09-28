@@ -64,4 +64,5 @@ public class TradeRuleServiceImpl implements TradeRuleService{
 	public List<RuleComparisonDTO> selectRuleComparison(int memberId) {
 	    return mapper.selectRuleComparison(memberId);
 	}
+	
 }

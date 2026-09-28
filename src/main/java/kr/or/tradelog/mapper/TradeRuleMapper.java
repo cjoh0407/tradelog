@@ -44,4 +44,5 @@ public interface TradeRuleMapper {
             @Param("ruleId") int ruleId,
             @Param("memberId") int memberId
     );
+    
 }
