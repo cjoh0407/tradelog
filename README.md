@@ -62,6 +62,10 @@ TradeLog는 그런 기록을 모아 투자 판단을 되짚고 개선할 근거�
       <strong>매매일지 상세보기</strong>
     </td>
     <td width="50%" align="center">
+      <a href="docs/ui/UI정의서_매매일지_등록.png"><img src="docs/ui/UI정의서_매매일지_등록.png" alt="매매일지 상세보기 UI 정의서" width="100%"></a><br>
+      <strong>매매일지 등록</strong>
+    </td>
+    <td width="50%" align="center">
       <a href="docs/ui/UI정의서_매매원칙.png"><img src="docs/ui/UI정의서_매매원칙.png" alt="매매원칙 UI 정의서" width="100%"></a><br>
       <strong>매매원칙</strong>
     </td>
